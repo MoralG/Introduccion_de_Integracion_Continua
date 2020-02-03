@@ -2,10 +2,6 @@
 
 #### Vamos a realizar una integración continua con Travis con la ayuda de django.
 
-[Instalación de Jekyll](https://github.com/MoralG/Instalacion_y_Configuracion_de_Jekyll/blob/master/Instalacion_Jekyll.md#intalaci%C3%B3n-de-jekyll)
-
-[Configuración de gitHub Pages](https://github.com/MoralG/Trabajando_con_GitHub-Pages/blob/master/Trabajando_con_Github_Pages.md#trabajando-con-github-pages)
-
 ## Tarea 1: Despliegue de una página web estática (build, deploy)
 
 Generar una página web estática con un generador de paginas estáticas y desplegarla.
@@ -14,11 +10,10 @@ Generar una página web estática con un generador de paginas estáticas y despl
 * La página se debe generar en el sistema de integración continúa, por lo tanto debemos instalar las herramientas necesarias.
 * Investiga si podemos desplegar de forma automática en el servicio elegido (si es necesario cambia el servicio de hosting para el despliegue).
 
-Tenemos en el directorio `Alejandro-MG` de nuestro equipo, la configuración de nuestra página generada con Jekyll, esta la vamos a subir a un repositorio de Github para que Travis la detecte y pueda realizar la integración continua.
+Tenemos en el directorio `Alejandro-MG` de nuestro equipo, la configuración de nuestra página generada con Jekyll (Si quieres saber como instalar y configurar Jekyll pulse [AQUÍ](https://github.com/MoralG/Instalacion_y_Configuracion_de_Jekyll/blob/master/Instalacion_Jekyll.md#intalaci%C3%B3n-de-jekyll)), esta la vamos a subir a un repositorio de Github para que Travis la detecte y pueda realizar la integración continua.
 
-Pero antes vamos a crea el fichero `.gitignore` en el directorio para indicar que fichero o directorios no queremos subir.
+Pero antes vamos a crea el fichero `.gitignore` en el directorio para indicar que fichero o directorios no queremos subir. Tenemos que indicarle que no suba a GitHub el directorio donde se generan los `html`, en nuestro caso `_site`.
 
-Tenemos que indicarle que no suba a GitHub el directorio donde se generan los `html`, en nuestro caso `_site`.
 ~~~
 cat .gitignore 
     _site/
@@ -28,6 +23,10 @@ cat .gitignore
     Gemfile.lock
     **/Gemfile.lock
 ~~~
+
+> NOTA: Los demás fichero y directorios a parte del `_site` los he metido porque no son necesario para la generación de la página estática.
+
+Ahora vamos a subir el directorio al repositorio creado y en la rama master. El branch master va ser el que contenga todos los fichero de configuración, static, etc..
 
 ###### Subiendo nuestro directorio `Alejandro-MG` a GitHub
 ~~~
@@ -39,14 +38,30 @@ git remote add origin git@github.com:MoralG/Alejandro-MG.git
 git push -u origin master
 ~~~
 
-Iniciamos en Travis con nuestro GIthub e indicamos la opción **Only select repositories** y seleccionamos nuestro repositorio **Alejandro-MG**.
+Cuando tengamos subido el directorio, vamos a crear un nuevo branch llamado `gh-pages` donde subiremos el directorio `_site`,  que es el que contiene los ficheros `html`.
+
+###### Creamos la rama `gh-pages`
+------------------------------------
+![Travis](image/Travis1.0.png)
+
+------------------------------------
+
+Además tenemos que activar GitHub Pages y si tenemos un Dominio propio se lo indicamos también (Si quieres saer como activar GitHub Pages con dominio propio pulse [AQUÍ](https://github.com/MoralG/Trabajando_con_GitHub-Pages/blob/master/Trabajando_con_Github_Pages.md#trabajando-con-github-pages))
+
+Iniciamos en Travis con nuestro Github e indicamos la opción **Only select repositories** y seleccionamos nuestro repositorio **Alejandro-MG**.
 
 ###### Añadimos el repositorio Alejandro-MG
+------------------------------------
 ![Travis](image/Travis1.1.png)
+
+------------------------------------
 
 Como podemos ver, ya nos sale agregado a Travis:
 
+------------------------------------
 ![Travis](image/Travis1.2.png)
+
+------------------------------------
 
 Ahora tenemos que creamos el fichero `.travis.yml` en el repositorio, este fichero es la configuración que va a seguir Travis para realizar la integración continua.
 
@@ -98,26 +113,39 @@ www.alejandro-mg.com
 Ahora vamos a generar el Tokens necesario para que Travis pueda realizar la integración continua. Para generar esto tenemos que ir a **Settings > Developer settings > Personal access tokens** y hacer clic en **Generate new token**. 
 
 ###### Creamos el Tokens
+------------------------------------
 ![Travis](image/Travis1.3.png)
+
+------------------------------------
 
 Nos saldrá una serie de opciones. Las cuales tenemos que seleccionar **repo** y **admin:repo_hook** para concederle permisos de escritura y lesctura a Travis.
 
 ###### Le concedemos los permisos a Travis
+------------------------------------
 ![Travis](image/Travis1.4.png)
+
+------------------------------------
 
 Cuando le demos a **Generate token** nos saldrá el código del Tokens, el cual tendremos que copiar. 
 ###### Copiamos el token
+------------------------------------
 ![Travis](image/Travis1.5.png)
+
+------------------------------------
 
 Con el token copiado nos dirigimos a Travis, al **settings** del repositorio, y nos vamos al apartado de **Enviroment Variables** y añadimos un token nuevo.
 
 En el apartado **Nombre** le indicamos `GITHUB_TOKEN` y en el apartado **Value** pegamos el token, lo demás lo dejamos por defecto y le damos a **add**.
 
 ###### Añadimos a Travis el Token
+------------------------------------
 ![Travis](image/Travis1.6.png)
+
+------------------------------------
 
 Ahora ya tendremos todo listo para que se realice la integración continua, para comprobar funciona tenemos que realizar cambios en nuestra configuración de nuestra página estática y realizar un `git push -u origin master`. Travis empezará a trabajar y a realizar las pautas que le hemos indicado en el fichero `.travis.yml`.
 
+###### Mostrando el Job log de Travis
 ~~~
 Worker information
 
@@ -215,9 +243,12 @@ Deploying application
 Done. Your build exited with 0.
 ~~~
 
-Terminado la integración correctamente, Travis nos mostrará el mensaje `Done. Your build exited with 0` y se mostrará así:
+Terminada la integración correctamente, Travis nos mostrará el mensaje `Done. Your build exited with 0` y se mostrará así:
 
+------------------------------------
 ![Travis](image/Travis1.7.png)
+
+------------------------------------
 
 ## Tarea 2: Integración continúa de aplicación django (Test + Deploy)
 
